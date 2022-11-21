@@ -4,8 +4,16 @@ import fs from "fs";
 import path from "path";
 import { start } from 'repl';
 
+function getPage0(b, t) {
+    const url = `https://thiruvachanam.in/ShowChaptersOfBook.do?b=${b}&t=${t}`;
+    console.log("download", url);
+    return getPageByUrl(url);
+}
+
 function getPage(c, b, t) {
-    return getPageByUrl(`https://thiruvachanam.in/ShowStatementsOfChapter.do?c=${c}&b=${b}&t=${t}`);
+    const url = `https://thiruvachanam.in/ShowStatementsOfChapter.do?c=${c}&b=${b}&t=${t}`;
+    console.log("download", url);
+    return getPageByUrl(url);
 }
 
 function getPageByUrl(url) {
@@ -87,7 +95,7 @@ async function getChapterList(page) {
 
 async function mainList(bookId, testamentId) {
     console.log("start list", bookId, testamentId);
-    const page = await getPage(1, bookId, testamentId);
+    const page = await getPage0(bookId, testamentId);
     const links = await getChapterList(page);
     const data = {
         bookId,
