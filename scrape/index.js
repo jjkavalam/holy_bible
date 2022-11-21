@@ -157,12 +157,12 @@ async function main() {
         await mainGetChapter(listFile, startIdx);
     }
     else if (cmd === "getall") {
-        // get lists of 4 to 46
-        // for (let i = 4; i <= 46; i++) {
-        //     await mainList(String(i), "1");
-        // }
+        // get lists of 48 to 73
+        for (let i = 48; i <= 73; i++) {
+            await mainList(String(i), "2");
+        }
         // get chapters
-        for (let i = 4; i <= 46; i++) {
+        for (let i = 48; i <= 73; i++) {
             await mainGetChapter(`lists/${i}.json`, 0);
         }
     }

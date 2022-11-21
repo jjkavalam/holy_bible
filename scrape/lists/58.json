@@ -1,0 +1,26 @@
+{
+  "bookId": "58",
+  "testamentId": "2",
+  "links": [
+    {
+      "href": "https://thiruvachanam.in/ShowStatementsOfChapter.do?c=1315&b=58&t=2",
+      "text": "ആമുഖം"
+    },
+    {
+      "href": "https://thiruvachanam.in/ShowStatementsOfChapter.do?c=1316&b=58&t=2",
+      "text": "1"
+    },
+    {
+      "href": "https://thiruvachanam.in/ShowStatementsOfChapter.do?c=1317&b=58&t=2",
+      "text": "2"
+    },
+    {
+      "href": "https://thiruvachanam.in/ShowStatementsOfChapter.do?c=1318&b=58&t=2",
+      "text": "3"
+    },
+    {
+      "href": "https://thiruvachanam.in/ShowStatementsOfChapter.do?c=1319&b=58&t=2",
+      "text": "4"
+    }
+  ]
+}
