@@ -1,8 +1,10 @@
 {
     "name": "@jjkavalam/holy-bible-ml",
-    "version": "1.0.4",
+    "version": "1.0.7",
     "description": "Malayalam Holy Bible",
     "browser": "browser.js",
+    "main": "node.js",
+    "type": "module",
     "files": [
         "browser.js",
         "file.bin"

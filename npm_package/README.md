@@ -1,4 +1,6 @@
-This package makes the Malayalam Holy Bible available for use in the browser.
+This package makes the Malayalam Holy Bible available for use in the browser as well as node.
+
+Note that for node, it is provided in ESM format.
 
 The contents of the Bible is provided in a structured format as shown below.
 
