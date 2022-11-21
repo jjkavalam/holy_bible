@@ -1,6 +1,6 @@
 {
     "name": "@jjkavalam/holy-bible-ml",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "Malayalam Holy Bible",
     "browser": "browser.js",
     "main": "node.js",
@@ -8,5 +8,10 @@
     "files": [
         "browser.js",
         "file.bin"
-    ]
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jjkavalam/bible",
+        "directory": "npm_package"
+    }
 }
