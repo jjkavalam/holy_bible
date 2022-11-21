@@ -1,0 +1,10 @@
+{
+    "name": "@jjkavalam/holy-bible-ml",
+    "version": "1.0.4",
+    "description": "Malayalam Holy Bible",
+    "browser": "browser.js",
+    "files": [
+        "browser.js",
+        "file.bin"
+    ]
+}
