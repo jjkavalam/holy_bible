@@ -156,6 +156,16 @@ async function main() {
         const startIdx = parseInt(process.argv[4]);
         await mainGetChapter(listFile, startIdx);
     }
+    else if (cmd === "getall") {
+        // get lists of 4 to 46
+        // for (let i = 4; i <= 46; i++) {
+        //     await mainList(String(i), "1");
+        // }
+        // get chapters
+        for (let i = 4; i <= 46; i++) {
+            await mainGetChapter(`lists/${i}.json`, 0);
+        }
+    }
     else {
         console.error("unknown command", cmd);
     }
