@@ -2,7 +2,6 @@ import fetch from 'node-fetch';
 import cheerio from 'cheerio';
 import fs from "fs";
 import path from "path";
-import { start } from 'repl';
 
 function getPage0(b, t) {
     const url = `https://thiruvachanam.in/ShowChaptersOfBook.do?b=${b}&t=${t}`;
@@ -46,7 +45,7 @@ async function parsePage(page) {
         if (pos === -1 || pos > 3) {
 
             titles.push({
-                before: verseCount - 1,
+                after: verseCount - 1,
                 text: line
             });
 
