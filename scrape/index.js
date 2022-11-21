@@ -1,5 +1,8 @@
 import fetch from 'node-fetch';
 import cheerio from 'cheerio';
+import fs from "fs";
+import path from "path";
+import { start } from 'repl';
 
 function getPage(c, b, t) {
     return getPageByUrl(`https://thiruvachanam.in/ShowStatementsOfChapter.do?c=${c}&b=${b}&t=${t}`);
@@ -9,30 +12,54 @@ function getPageByUrl(url) {
     return fetch(url).then(resp => resp.text());
 }
 
+async function parseAmukham(page) {
+    const $ = cheerio.load(page);
+    const text = $("#statementList").text();
+    return {
+        titles: [],
+        verses: [],
+        specialText: text
+    };
+}
+
 async function parsePage(page) {
     const $ = cheerio.load(page);
     const text = $("#statementList").text();
 
     const lines = text.split("\n").map(line => line.trim()).filter(line => line.length > 0);
 
-    const verseLines = lines[1].startsWith("1 :") ? lines.slice(1) : lines.slice(2);
+    let verseCount = 0;
 
-    const verses = verseLines.map((line, i) => {
+    const verses = [];
+    const titles = [];
+
+    lines.forEach((line) => {
         const pos = line.indexOf(":");
+        if (pos === -1 || pos > 3) {
+
+            titles.push({
+                before: verseCount - 1,
+                text: line
+            });
+
+            return;
+        }
+        verseCount++;
         const num = line.substring(0, pos);
         const text = line.substring(pos + 1);
 
         // verify
-        if (parseInt(num) !== i + 1) {
-            console.error(verseLines, num, i);
+        if (parseInt(num) !== verseCount) {
+            console.error(lines, num, verseIdx);
             throw new Error("something is wrong, verse doesn't match line number: " + line);
         }
 
-        return text.trim();
+        const verse = text.trim();
+        verses.push(verse);
     });
 
     const chapter = {
-        title: lines[1],
+        titles,
         verses
     }
 
@@ -40,13 +67,17 @@ async function parsePage(page) {
 
 }
 
-async function getChatperList(page) {
+async function getChapterList(page) {
     const $ = cheerio.load(page);
     const links = [];
-    $(".chapterList a").map((i, elem) => {
+    const seenHrefs = new Set();
+    $(".chapterList a").map((_, elem) => {
         const $elem = $(elem);
+        const href = `https://thiruvachanam.in/${$elem.attr('href')}`;
+        if (seenHrefs.has(href)) return;
+        seenHrefs.add(href);
         const item = {
-            href: `https://thiruvachanam.in/${$elem.attr('href')}`,
+            href,
             text: $elem.text().trim()
         }
         links.push(item);
@@ -54,22 +85,71 @@ async function getChatperList(page) {
     return links;
 }
 
-async function main() {
-    const bible = {};
+async function mainList(bookId, testamentId) {
+    console.log("start list", bookId, testamentId);
+    const page = await getPage(1, bookId, testamentId);
+    const links = await getChapterList(page);
+    const data = {
+        bookId,
+        testamentId,
+        links
+    };
+    const filePath = path.join("lists", `${bookId}.json`);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    console.log(`wrote ${filePath}`);
+}
 
-    const book = 1;
-    const testament = 1;
+async function mainGetChapter(listFile, startIdx) {
+    console.log("start get", listFile, startIdx);
+    const list = JSON.parse(fs.readFileSync(listFile, { encoding: "utf-8" }));
 
-    const page = await getPage(1, book, testament);
-    const links = await getChatperList(page);
-    for (const link of links.slice(0, 3)) {
-        console.log(link);
+    const { bookId, testamentId, links } = list;
+
+    for (const link of links.slice(startIdx)) {
+        const chapters = [];
+        const books = [
+            {
+                bookId,
+                testamentId,
+                chapters
+            }
+        ]
+    
+        console.log("processing link", link);
+        const chapterId = link.text;
         const contents = await getPageByUrl(link.href);
-        const parsed = await parsePage(contents);
-        bible[`${testament}:${book}:${link.text}`] = parsed;
+        let parsed;
+        if (chapterId === "ആമുഖം") {
+            parsed = await parseAmukham(contents);
+        }
+        else {
+            parsed = await parsePage(contents);
+        }
+
+        chapters.push({
+            chapterId,
+            ...parsed,
+        });
+        const filePath = path.join("out", `${bookId}_${chapterId}.json`);
+        fs.writeFileSync(filePath, JSON.stringify(books, null, 2));
+        console.log("wrote", filePath);
     }
+}
 
-    console.log(bible);
-
+async function main() {
+    const cmd = process.argv[2];
+    if (cmd === "list") {
+        const bookId = process.argv[3];
+        const testamentId = process.argv[4];
+        await mainList(bookId, testamentId);
+    }
+    else if (cmd === "get") {
+        const listFile = process.argv[3];
+        const startIdx = parseInt(process.argv[4]);
+        await mainGetChapter(listFile, startIdx);
+    }
+    else {
+        console.error("unknown command", cmd);
+    }
 }
 main().catch(console.error);
