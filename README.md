@@ -31,6 +31,12 @@ This repository contains `holy_bible.json` which contains the entire text of the
 
 Size is ~14 MB (2 MB gzipped).
 
+## Updating
+
+1. Update `holy_bible.json` (source of truth)
+2. Update `npm_package/file.bin` (`cd npm_package && node compress.js`)
+3. Update `csv/verses.csv` (`cd csv && node index.js`)
+
 ## Scraping
 
 The contents have been scraped from: https://thiruvachanam.in/
