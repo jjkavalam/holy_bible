@@ -42,7 +42,7 @@ async function parsePage(page) {
 
     lines.forEach((line) => {
         const pos = line.indexOf(":");
-        if (pos === -1 || pos > 3) {
+        if (pos === -1 || pos > 4) {
 
             titles.push({
                 after: verseCount - 1,
